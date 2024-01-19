@@ -435,8 +435,10 @@ mtext(text="p=0.001", side = 3, line=-1, adj=.1)
 
 
 
+#_______________________________________________________________________
+############## ADVANCED: Model Selection ##############################
+#______________________________________________________________________
 
-##----- Model selection for the keen -----##
 
 # Steps from Zuur et al. 2009 Mixed effects models and extensions in ecology with R.
 
