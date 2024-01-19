@@ -13,6 +13,7 @@
 #_____________________________________________________________________________________________
 ###### Load Packages ########
 #_____________________________________________________________________________________________
+# install.packages("nlme")
 # install.packages("lme4")
 # install.packages("lmerTest")
 # install.packages("tidyverse")
@@ -20,6 +21,7 @@
 # install.packages("RColorBrewer")
 # install.packages("car")
 
+library(nlme)
 library(lme4)
 library(lmerTest)
 library(ggplot2)
@@ -428,5 +430,53 @@ mtext(text="p=0.001", side = 3, line=-1, adj=.1)
 
 ####### END: Large Scale Trade-off analysis ############################
 #_____________________________________________________________________________________________
+
+
+
+
+
+
+##----- Model selection for the keen -----##
+
+# Steps from Zuur et al. 2009 Mixed effects models and extensions in ecology with R.
+
+#1) Determine your random effects structure with 'over the top' fixed effects structure
+#   - fit models with REML and compare with AIC or AICc
+#2) Determine your most parsimonious fixed effects structure with a consistent random effects structure
+#   - fit models with ML and compare with AIC or AICc
+#3) Refit your best model with REML to get best parameter estimates
+#4) (and throughout) Make model criticism plots to make sure your model isn't violating assumptions
+
+# first make a UNIQUE site indicator
+dragons$site.unique <- paste(dragons$site, dragons$mountainRange, sep=".")
+dragons$bodyLength_scaled <- scale(dragons$bodyLength)
+dragons$testScore_scaled <- scale(dragons$testScore)
+
+###### 1) Select random effect structure
+# no random effects (have to use gls() from nlme package rather than lm for comparison with lmer objects)
+rand0 <- gls(testScore~bodyLength0*mountainRange, dragons,method = "REML")
+# random intercepts model
+rand1 <- lmer(testScore~bodyLength0*mountainRange + (1|site.unique), dragons, REML = T)
+# random slope + intercept model
+rand2 <- lmer(testScore~bodyLength*mountainRange + (bodyLength0|site.unique), dragons, REML = T)
+
+AIC(rand0, rand1, rand2)
+
+# or AICc from the MuMIn package for small sample sizes
+#install.packages("MuMIn")
+library(MuMIn)
+AICc(rand0, rand1, rand2)
+
+# Random Intercepts is best!
+
+###### 2) Select fixed effects
+
+
+
+###### 3) refit model with REML
+
+
+
+###### 4) model criticism
 
 
